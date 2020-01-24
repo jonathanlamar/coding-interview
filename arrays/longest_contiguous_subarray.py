@@ -1,10 +1,13 @@
 from IPython import embed
 
-# Given an array, arr, of positive numbers, find the length of the longest
+# Given an array, arr, of positive numbers, find the length of the shortest
 # contiguous subarray whose sum is greater than or equal to n.  If no such
 # subarray exists, return 0.
 # For example, if arr = [1, 2, 3, 4, 1, 3] and S = 5, then f(arr, n) = 2.
 
+# The easy solution is to loop over beginning and endpoints independently and
+# test for the conditions.  Meanwhile we update a tracker variable only when
+# we find a better solution.
 def brute_force(arr, S):
     # My brute force solution.  This is pretty bad, and has time complexity
     # O(n^2), where n is the length of arr.
@@ -83,6 +86,70 @@ def optimal_solution(arr, S):
         return bestLen
     else:
         return 0
+
+
+# A very similar problem common to ask is: What is the length of the longest
+# substring of a string with no repeated characters.  I model the solution
+# after the above optimal solution.  The analogy is that strings are simply
+# arrays, and we are merely finding the longest contiguous subarray subject
+# to a condition.
+def longest_nonrepeating_substring(S):
+
+    def debug(debugStr):
+        print('--------------------------------------------------------')
+        print(debugStr)
+        print('--------------------------------------------------------')
+        print('rightEndpoint = %d\nleftEndpoint = %d\ncharCounts = %s\n'
+              'bestLen = %d\nconditionMet = %s\ncurrent length = %d\n'
+              % (rightEndpoint, leftEndpoint, str(charCounts), bestLen,
+                 str(conditionMet), rightEndpoint-leftEndpoint+1))
+
+    # Starting from 0 now because we're looking for the longest subarray.
+    bestLen = 0
+
+    # Edge cases
+    if len(S) == 0:
+        return 0
+    elif len(S) == 1:
+        return 1
+
+    charCounts = {}
+    conditionMet = True
+
+    leftEndpoint = 0
+    for rightEndpoint in range(len(S)):
+        # Update hash map
+        if S[rightEndpoint] not in charCounts or charCounts[S[rightEndpoint]] == 0:
+            charCounts[S[rightEndpoint]] = 1
+            if rightEndpoint - leftEndpoint + 1 > bestLen:
+                bestLen = rightEndpoint - leftEndpoint + 1
+
+            debug('Updating rightEndpoint')
+            continue
+        else:
+            charCounts[S[rightEndpoint]] += 1
+            conditionMet = False
+
+        debug('Updating rightEndpoint')
+
+        while not conditionMet:
+            # Do stuff
+            charCounts[S[leftEndpoint]] -= 1
+            leftEndpoint += 1
+
+            # This destroys O(n) runtime.
+            # Actually no.  charCounts.values() has length <= total number of characters...
+            # Still seems ugly
+            if all([x <= 1 for x in charCounts.values()]):
+                conditionMet = True
+
+                # This should not be necessary, but it only adds O(1) runtime...
+                if rightEndpoint - leftEndpoint + 1 > bestLen:
+                    bestLen = rightEndpoint - leftEndpoint + 1
+
+            debug('Updating leftEndpoint')
+
+    return bestLen
 
 
 
