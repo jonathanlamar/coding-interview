@@ -95,15 +95,6 @@ def optimal_solution(arr, S):
 # to a condition.
 def longest_nonrepeating_substring(S):
 
-    def debug(debugStr):
-        print('--------------------------------------------------------')
-        print(debugStr)
-        print('--------------------------------------------------------')
-        print('rightEndpoint = %d\nleftEndpoint = %d\ncharCounts = %s\n'
-              'bestLen = %d\nconditionMet = %s\ncurrent length = %d\n'
-              % (rightEndpoint, leftEndpoint, str(charCounts), bestLen,
-                 str(conditionMet), rightEndpoint-leftEndpoint+1))
-
     # Starting from 0 now because we're looking for the longest subarray.
     bestLen = 0
 
@@ -116,6 +107,9 @@ def longest_nonrepeating_substring(S):
     charCounts = {}
     conditionMet = True
 
+    # Using a similar one-pass search to the above solution.  Most of the
+    # difference is due to that we're looking for a longest subarray this
+    # time as opposed to shortest.
     leftEndpoint = 0
     for rightEndpoint in range(len(S)):
         # Update hash map
@@ -124,30 +118,24 @@ def longest_nonrepeating_substring(S):
             if rightEndpoint - leftEndpoint + 1 > bestLen:
                 bestLen = rightEndpoint - leftEndpoint + 1
 
-            debug('Updating rightEndpoint')
             continue
         else:
             charCounts[S[rightEndpoint]] += 1
             conditionMet = False
 
-        debug('Updating rightEndpoint')
-
         while not conditionMet:
-            # Do stuff
+            # TODO: This could be shortcut if I kept track of indices of
+            # characters.
             charCounts[S[leftEndpoint]] -= 1
             leftEndpoint += 1
 
-            # This destroys O(n) runtime.
-            # Actually no.  charCounts.values() has length <= total number of characters...
-            # Still seems ugly
+            # This may seem bad, but only has O(num characters) runtime...
             if all([x <= 1 for x in charCounts.values()]):
                 conditionMet = True
 
                 # This should not be necessary, but it only adds O(1) runtime...
                 if rightEndpoint - leftEndpoint + 1 > bestLen:
                     bestLen = rightEndpoint - leftEndpoint + 1
-
-            debug('Updating leftEndpoint')
 
     return bestLen
 
