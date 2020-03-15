@@ -2,13 +2,13 @@
 
 ## How much can I learn in one month
 
-I know I'm not oging to get significantly better at problem solving in one month
+I know I'm not going to get significantly better at problem solving in one month
 (although I should practice), so I am going to spend a portion of my time doing
 some targeted memorization.  As they come up:
 
 ### Searches
 
-Binary search.  This is very simple to implement.  In words: You ifnd an element
+Binary search.  This is very simple to implement.  In words: You find an element
 x in a list L of integers of length N by comparing L[N/2] to x.  If x > L[N/2],
 then x is in the back half of the list, else front half.  Then recurse on the
 back half of the list and add N/2 to the result.  Runtime is O(log(N)).  Space

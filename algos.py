@@ -4,7 +4,7 @@ from queue import Queue, LifoQueue
 # My stuff
 from binary_tree import BinaryTreeNode
 
-def binSearch(sortedList: List[int], target: int) -> int:
+def iterativeBinarySearch(sortedList: List[int], target: int) -> int:
     r""" Binary search of a list of integers for a target.  """
     N = len(sortedList)
 
@@ -45,6 +45,27 @@ def binSearch(sortedList: List[int], target: int) -> int:
         return L
     else:
         return -1
+
+
+def recursiveBinarySearch(sortedList: List[int], target: int) -> int:
+    r""" Binary search of a list of integers for a target.  """
+
+    N = len(sortedList)
+
+    if N == 0:
+        return -1
+
+    L = 0
+    R = N - 1
+
+    m = int((L + R) / 2)
+
+    if sortedList[m] == target:
+        return m
+    elif sortedList[m] < target:
+        return m + 1 + recursiveBinarySearch(sortedList[m+1:], target)
+    else:
+        return recursiveBinarySearch(sortedList[:m], target)
 
 
 def depthFirstSearch(tree: BinaryTreeNode) -> List[int]:
