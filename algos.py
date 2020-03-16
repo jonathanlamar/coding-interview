@@ -136,3 +136,25 @@ def inOrderTraversal(tree: BinaryTreeNode, visitStack: List[int]) -> List[int]:
             visitStack = inOrderTraversal(tree.right, visitStack)
 
         return visitStack
+
+
+def mergeSort(nums: List[int]) -> List[int]:
+    r"""
+    Sorts a list of integers using merge sort, an example of divide-and-conquor.
+    """
+
+    N = len(nums)
+
+    if N <= 1:
+        return nums
+
+    m = int(N/2)
+
+    nums1 = mergeSort(nums[:m])
+    nums2 = mergeSort(nums[m:])
+
+    # Merge two sorted subarrays.
+    def merge(nums1, nums2):
+        pass
+
+    return merge(nums1, nums2)
