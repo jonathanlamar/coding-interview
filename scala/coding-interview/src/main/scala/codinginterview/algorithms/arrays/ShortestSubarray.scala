@@ -20,7 +20,7 @@ object ShortestSubarray {
 
     for (
       leftEndpoint <- 0 until arr.length;
-      rightEndpoint <- 0 until arr.length
+      rightEndpoint <- leftEndpoint until arr.length
     ) {
       val tmpSum = arr.slice(leftEndpoint, rightEndpoint + 1).sum
 
@@ -38,7 +38,7 @@ object ShortestSubarray {
 
   /** The solution can be improved by noting that in the brute force solution, we
     * start with short subarrays and increase length.  Also, if we are looking at a
-    * subarray whose sum is already greater than or equal to S, then there is no
+    * subarray whose sum is already greater than or equal to sum, then there is no
     * need to increase the right endpoint.  This hints at a better solution: that
     * we can iterate the right endpoint until we find a subarray whose sum is >= S,
     * then iterate the left endpoint from 0 until we fail to satisfy the sum
