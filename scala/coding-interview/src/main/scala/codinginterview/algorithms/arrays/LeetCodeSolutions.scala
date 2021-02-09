@@ -111,4 +111,96 @@ object LeetCodeSolutions {
 
     return (bestArea, bestLe, bestRe)
   }
+
+  /** https://leetcode.com/problems/3sum/
+    * Given an array nums of n integers, are there elements a, b, c in nums
+    * such that a + b + c = 0? Find all unique triplets in the array which
+    * gives the sum of zero.  Notice that the solution set must not contain
+    * duplicate triplets.
+    */
+  // TODO: This solution returns a bunch of dupes.  This needs to be tweaked.
+  def threeSum_BROKEN(nums: List[Int]): List[List[Int]] = {
+    def twoSum(
+        arr: List[Int],
+        idxToSkip: Int,
+        sumVal: Int
+    ): List[List[Int]] = {
+      var valMap: HashMap[Int, Int] = new HashMap()
+      var solutionList: List[List[Int]] = List()
+
+      // Linear time and space
+      for ((x, i) <- arr.zipWithIndex if i != idxToSkip) {
+        if (valMap.keySet.contains(x)) {
+          solutionList = solutionList :+ List(-sumVal, x, nums(valMap(x)))
+        } else {
+          valMap(sumVal - x) = i
+        }
+      }
+
+      return solutionList
+    }
+
+    // Linear time
+    nums.toList.zipWithIndex.flatMap({ case (x: Int, i: Int) =>
+      twoSum(nums, i, -x)
+    })
+  }
+
+  // Long story short, it has to be N^2 time because there are two degrees of
+  // freedom in the problem.  Thus, we can sort the array first and loop
+  // cleverly to avoid dupes.
+  def threeSum(nums: Array[Int]): List[List[Int]] = {
+    val N = nums.length
+    if (N < 3) return Nil
+
+    var sols: List[List[Int]] = Nil
+    val sortedNums = nums.sorted // O(Nlog(N))
+
+    for (i <- 0 until N - 2) {
+
+      // Crucial step here (1 of 3) to avoid dups - we skip over repeated values in the array with
+      // this condition.
+      if (i == 0 || sortedNums(i) > sortedNums(i - 1)) {
+        // Candidate indexes for other values in solution
+        var secondIdx = i + 1
+        var thirdIdx = N - 1
+
+        // O(N) loop
+        while (secondIdx < thirdIdx) {
+          // register solution found.
+          if (
+            sortedNums(i) + sortedNums(secondIdx) + sortedNums(thirdIdx) == 0
+          ) {
+            sols = sols :+ List(
+              sortedNums(i),
+              sortedNums(secondIdx),
+              sortedNums(thirdIdx)
+            )
+          }
+
+          if (
+            sortedNums(i) + sortedNums(secondIdx) + sortedNums(thirdIdx) < 0
+          ) {
+
+            // Crucial step 2 to avoid dups - increment *until new value found*
+            val oldStart = secondIdx
+            while (
+              sortedNums(oldStart) == sortedNums(
+                secondIdx
+              ) && secondIdx < thirdIdx
+            ) secondIdx += 1
+          } else {
+
+            // Crucial step 3 - decrement *until new value found*
+            val oldEnd = thirdIdx
+            while (
+              sortedNums(oldEnd) == sortedNums(thirdIdx) && secondIdx < thirdIdx
+            ) thirdIdx -= 1
+          }
+        }
+      }
+    }
+
+    return sols
+  }
 }
