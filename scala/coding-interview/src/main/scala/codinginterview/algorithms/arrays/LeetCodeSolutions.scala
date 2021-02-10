@@ -119,7 +119,7 @@ object LeetCodeSolutions {
     * duplicate triplets.
     */
   // TODO: This solution returns a bunch of dupes.  This needs to be tweaked.
-  def threeSum_BROKEN(nums: List[Int]): List[List[Int]] = {
+  def threeSum_nested(nums: List[Int]): List[List[Int]] = {
     def twoSum(
         arr: List[Int],
         idxToSkip: Int,
@@ -131,7 +131,8 @@ object LeetCodeSolutions {
       // Linear time and space
       for ((x, i) <- arr.zipWithIndex if i != idxToSkip) {
         if (valMap.keySet.contains(x)) {
-          solutionList = solutionList :+ List(-sumVal, x, nums(valMap(x)))
+          solutionList =
+            solutionList :+ List(-sumVal, x, nums(valMap(x))).sorted
         } else {
           valMap(sumVal - x) = i
         }
@@ -141,15 +142,20 @@ object LeetCodeSolutions {
     }
 
     // Linear time
-    nums.toList.zipWithIndex.flatMap({ case (x: Int, i: Int) =>
-      twoSum(nums, i, -x)
-    })
+    nums.sorted.zipWithIndex
+      .flatMap({ case (x: Int, i: Int) => twoSum(nums, i, -x) })
+      // O(N*log(N)) step after quadratic, so no asymptotic loss.
+      // BTW, this ruins the elegance of the solution.  It would have been clever, but this kinda
+      // defeats that for me.
+      .sortWith((l1, l2) => l1(0) < l2(0) || (l1(0) == l2(0) && l1(1) < l2(1)))
+      .distinct
+      .toList
   }
 
   // Long story short, it has to be N^2 time because there are two degrees of
   // freedom in the problem.  Thus, we can sort the array first and loop
   // cleverly to avoid dupes.
-  def threeSum(nums: Array[Int]): List[List[Int]] = {
+  def threeSum_sortFirst(nums: Array[Int]): List[List[Int]] = {
     val N = nums.length
     if (N < 3) return Nil
 
