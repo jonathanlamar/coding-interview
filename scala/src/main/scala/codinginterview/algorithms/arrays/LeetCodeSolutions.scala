@@ -2,7 +2,7 @@ package codinginterview.algorithms.arrays
 
 import scala.collection.mutable.HashMap
 import scala.collection.mutable.Stack
-import scala.math.min
+import scala.math._
 
 object LeetCodeSolutions {
   def validParens(parenString: String): Boolean = {
@@ -209,4 +209,124 @@ object LeetCodeSolutions {
 
     return sols
   }
+
+  // https://leetcode.com/problems/zigzag-conversion/
+  // The string "PAYPALISHIRING" is written in a zigzag pattern on a given
+  // number of rows like this: (you may want to display this pattern in a fixed
+  // font for better legibility)
+  // P   A   H   N
+  // A P L S I I G
+  // Y   I   R
+  // And then read line by line: "PAHNAPLSIIGYIR"
+  // Write the code that will take a string and make this conversion given a
+  // number of rows:
+  // string convert(string s, int numRows);
+  def zigZagString(s: String, numRows: Int): String = {
+    if (numRows == 1) return s
+
+    var direction = 1 // 1 means down
+    var currentRow = 0
+
+    // Hashmap rowNum -> queue of chars
+    // This should be optimized, since building strings is costly in both time and space
+    var map: HashMap[Int, String] = HashMap()
+
+    for (c <- s) {
+      // Update map
+      map.get(currentRow) match {
+        case None      => map.put(currentRow, c.toString)
+        case Some(str) => map.put(currentRow, str + c.toString)
+      }
+
+      // Update direction and level
+      if (
+        currentRow == 0 && direction == -1 || currentRow == numRows - 1 && direction == 1
+      ) {
+        // Turn around and advance
+        direction = -1 * direction
+        currentRow += direction
+      } else {
+        currentRow += direction
+      }
+    }
+
+    println(map)
+
+    // This is O(N) time
+    var outputString = ""
+    for (i <- 0 until numRows) {
+      map.get(i) match {
+        case Some(str) => outputString = outputString + str
+        case None      =>
+      }
+    }
+
+    return outputString
+  }
+
+  // https://leetcode.com/problems/palindrome-number/
+  // Given an integer x, return true if x is palindrome integer.
+  // An integer is a palindrome when it reads the same backward as forward. For
+  // example, 121 is palindrome while 123 is not.
+  //
+  // Example 1:
+  // Input: x = 121
+  // Output: true
+  //
+  // Example 2:
+  // Input: x = -121
+  // Output: false
+  // Explanation: From left to right, it reads -121. From right to left, it
+  // becomes 121-. Therefore it is not a palindrome.
+  //
+  // Example 3:
+  // Input: x = 10
+  // Output: false
+  // Explanation: Reads 01 from right to left. Therefore it is not a
+  // palindrome.
+  def isPalindrome(x: Int): Boolean = {
+
+    // negative should always return false
+    if (x < 0) return false
+    else if (x > 0 && x % 10 == 0) return false
+
+    var xRev1 = x
+    var xRev2 = 0
+
+    while (xRev1 > xRev2) {
+      xRev2 = xRev2 * 10 + xRev1 % 10
+      xRev1 = (xRev1 / 10).toInt
+    }
+
+    println(x, xRev1, xRev2)
+
+    return xRev1 == xRev2 || xRev1 == (xRev2 / 10).toInt
+  }
+
+  // https://leetcode.com/problems/maximum-subarray/
+  // Given an integer array nums, find the contiguous subarray (containing at
+  // least one number) which has the largest sum and return its sum.
+  //
+  // I thought this was pretty hard.  I got boxed into a two pointer solution,
+  // since I thought it was like the max area problem above.  Turns out, it's
+  // actually an easy dynamic programming problem.  I guess the lesson there is
+  // in recognition of the problem type.
+  def maxSubArray(nums: Array[Int]): Int = {
+    var maxSoFar = nums(0)
+    var maxEndingHere = nums(0)
+
+    for (i <- 1 until nums.length) {
+      maxEndingHere = max(nums(i), maxEndingHere + nums(i))
+      maxSoFar = max(maxSoFar, maxEndingHere)
+    }
+
+    return maxSoFar
+  }
+
+  // https://leetcode.com/problems/add-binary/
+  // Given two binary strings a and b, return their sum as a binary string.
+  //
+  // Example 1:
+  // Input: a = "11", b = "1"
+  // Output: "100"
 }

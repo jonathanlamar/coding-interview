@@ -1,6 +1,23 @@
 # coding-interview
 
-Storing solutions to common coding interview problems
+Storing solutions to common coding interview problems and also some notes.
+
+## A playbook for an algorithm question
+
+1. Solidify the requirements.
+2. Establish the brute force runtime and best conceivable runtimes. This helps
+   narrow down the possible runtimes.
+3. Relate to previous solved problems.
+4. Plan out rough skeleton of solutions.
+5. Work, out a few test cases and apply them to the meta-algorithm.
+6. Code the solution. Do it correctly and fast.
+7. Test your solution.
+
+### Some random tips
+
+- Avoid while loops with complicated logic.
+- Use Hashmaps to trade time for space.
+- BSTs for searchable data
 
 ## Google Interview (March 2020)
 
@@ -22,9 +39,7 @@ case space is O(1).
 
 MANY different sorting algorithms
 
-**TODO:** Implement some classic ones
-
-It is commonly stated that sorting is O(n\*log(n)). TOOD: Learn why this is.
+It is commonly stated that sorting is O(nlog(n)). TOOD: Learn why this is.
 
 ### Hash tables
 

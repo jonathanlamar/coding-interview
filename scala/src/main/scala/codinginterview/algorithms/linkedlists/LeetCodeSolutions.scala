@@ -1,6 +1,7 @@
 package codinginterview.algorithms.linkedlists
 
 import codinginterview.datastructures.LinkedList._
+import codinginterview.datastructures.LinkedList2._
 
 object LeetCodeSolutions {
 
