@@ -19,6 +19,11 @@ Here is a playbook for the system design interview.
    - Solidify requirements and make reasonable assumptions about traffic/volume.
      This allows you to do back of the envelope calculations to establish
      limits.
+   - Once we have finalized requirements, it is a good idea to define the API.
+   - Define the DB schema and identify whether it is read-heavy, write-heavy, or
+     both. Knowing the schema also helps determine the database type that
+     will be required, e.g., is relational important, or can we use key-value
+     store or something.
 2. Propose a high level design and get buy-in.
    - Try to collaborate with the interviewer. This is not only good because it
      helps her evaluate you as a coworker, but you can also get early feedback
@@ -42,6 +47,7 @@ Here is a playbook for the system design interview.
 - dealing with imbalanced reads from shards (e.g., very popular user on social
   network)
 - Learn conceptually how MapReduce works
+- ACID transactions in SQL is good for distributed computing for some reason?
 
 ## Considerations
 
