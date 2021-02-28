@@ -111,7 +111,10 @@ sending health check RPCs to the services at each endpoint.
 
 A cache is in-memory storage of frequently accessed data. This can be a layer
 of flash storage between a database and application layer, or flash storage on
-the application server itself.
+the application server itself. An intereesting idea I saw was that one can
+cache based on some sort of 80/20 rule, e.g., for a social network, you can
+expect that 20% of users will get 80% of the requests. So you can set cache
+equal to 20% of the storage volume.
 
 At a high level, there are three schemes for caching data:
 
