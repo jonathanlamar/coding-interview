@@ -50,19 +50,4 @@ object Search {
     else return recursiveBinarySearch(sortedList.take(midpoint))(target)
   }
 
-  /** Sorts a list of integers using merge sort, an example of divide-and-conquor. */
-  def mergeSort(nums: List[Int]): List[Int] = {
-    val N = nums.length
-    if (N <= 1) return nums
-
-    val m: Int = N / 2
-
-    val sortedFirstHalf = mergeSort(nums.take(m))
-    val sortedSecondHalf = mergeSort(nums.drop(m))
-
-    return merge(sortedFirstHalf, sortedSecondHalf)
-  }
-
-  private def merge(firstHalf: List[Int], secondHalf: List[Int]): List[Int] =
-    ???
 }

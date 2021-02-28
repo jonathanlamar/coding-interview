@@ -108,4 +108,94 @@ object LongestSubstring {
 
     return str.substring(ind1, ind2 + 1)
   }
+
+  // https://leetcode.com/problems/longest-substring-with-at-most-two-distinct-characters/
+  // (Problem hidden because I don't pay for the premium leetcode anymore)
+  //
+  // Find the longest substring of a string with at most numRepeat repeating
+  // characters
+  def longestSubstringWithRepeat(str: String, numRepeat: Int): String = {
+    var leftIndex = 0
+    var rightIndex = 0
+    var repeatHashMap: HashMap[Char, Int] = new HashMap()
+    repeatHashMap.put(str(0), 1)
+    var conditionIsTrue = true
+    var bestLeftIndex = 0
+    var bestRightIndex = 0
+
+    while (conditionIsTrue && rightIndex < str.length() - 1) {
+      // Update right endpoint
+      rightIndex += 1
+      repeatHashMap.get(str(rightIndex)) match {
+        case None        => repeatHashMap.put(str(rightIndex), 1)
+        case Some(value) => repeatHashMap(str(rightIndex)) += 1
+      }
+
+      // Update condition truth value
+      conditionIsTrue = repeatHashMap(str(rightIndex)) <= numRepeat
+
+      // Update best indexes if need be
+      if (
+        conditionIsTrue && rightIndex - leftIndex > bestRightIndex - bestLeftIndex
+      ) {
+        bestLeftIndex = leftIndex
+        bestRightIndex = rightIndex
+      }
+
+      while (!conditionIsTrue) {
+        // Update left endpoint
+        repeatHashMap(str(leftIndex)) -= 1
+        leftIndex += 1
+
+        // update condition
+        // This is linear in number of characters.  Since there are a fixed
+        // number of characters, this should be considered O(1)
+        conditionIsTrue = repeatHashMap.values.forall(_ <= numRepeat)
+      }
+    }
+
+    return str.substring(bestLeftIndex, bestRightIndex + 1)
+  }
+
+  // https://leetcode.com/problems/combination-sum/
+  // Given an array of distinct integers candidates and a target integer
+  // target, return a list of all unique combinations of candidates where the
+  // chosen numbers sum to target. You may return the combinations in any
+  // order.
+  //
+  // The same number may be chosen from candidates an unlimited number
+  // of times. Two combinations are unique if the frequency of at least one of
+  // the chosen numbers is different.
+  //
+  // This stumped me.  I actually had a clever idea of using a flat map and
+  // subtracting the number from the target, but somehow that didn't implement
+  // backtracking correctly.  The better solution would be to hash the partial
+  // lists and properly implement backtracking.
+  def combinationSum(candidates: Array[Int], target: Int): List[List[Int]] = {
+    def buildSum(
+        candidates2: Array[Int],
+        partialSolution: List[Int],
+        target2: Int
+    ): List[List[Int]] = {
+      if (target2 == 0) return List(partialSolution)
+      else if (target2 < 0) return Nil
+      else
+        return combinationSum(candidates2, target2).map(list =>
+          partialSolution ::: list
+        )
+    }
+
+    var solutions: List[List[Int]] = Nil
+    for (i <- 0 until candidates.length) {
+      val num = candidates(i)
+      var partialSolution = List(num)
+      solutions = solutions ::: buildSum(
+        candidates.drop(i),
+        partialSolution,
+        target - num
+      )
+    }
+
+    return solutions
+  }
 }
