@@ -1,6 +1,7 @@
 package codinginterview.algorithms
 
 import scala.collection.mutable.HashMap
+import scala.math._
 
 object Cetera {
 
@@ -53,5 +54,162 @@ object Cetera {
     }
 
     return reversedNums
+  }
+
+  // https://leetcode.com/problems/add-binary/
+  // Given two binary strings a and b, return their sum as a binary string.
+  //
+  // Example 1:
+  // Input: a = "11", b = "1"
+  // Output: "100"
+  // I hate this problem
+  def sumBinaryString(a: String, b: String): String = {
+    var N = max(a.length(), b.length())
+
+    var newA = ("0" * (N - a.length()) + a).reverse
+    var newB = ("0" * (N - b.length()) + b).reverse
+
+    println(s"newA = ${newA}, newB = ${newB}")
+
+    var carry: Boolean = false
+    var runningSum = ""
+
+    for (i <- 0 until N) {
+      println(s"i = ${i}, carry = ${carry}, runningSum = ${runningSum}")
+
+      if (newA(i) == '0' && newB(i) == '0' && !carry) {
+        runningSum = "0" + runningSum
+      } else if (newA(i) == '1' && newB(i) == '0' && !carry) {
+        runningSum = "1" + runningSum
+      } else if (newA(i) == '0' && newB(i) == '1' && !carry) {
+        runningSum = "1" + runningSum
+      } else if (newA(i) == '1' && newB(i) == '1' && !carry) {
+        runningSum = "0" + runningSum
+        carry = true
+      } else if (newA(i) == '0' && newB(i) == '0' && carry) {
+        runningSum = "1" + runningSum
+        carry = false
+      } else if (newA(i) == '1' && newB(i) == '0' && carry) {
+        runningSum = "0" + runningSum
+        carry = false
+      } else if (newA(i) == '0' && newB(i) == '1' && carry) {
+        runningSum = "0" + runningSum
+        carry = false
+      } else if (newA(i) == '1' && newB(i) == '1' && carry) {
+        runningSum = "1" + runningSum
+      }
+    }
+
+    if (carry) runningSum = "1" + runningSum
+
+    return runningSum
+  }
+
+  // https://leetcode.com/problems/group-anagrams/
+  // Given an array of strings strs, group the anagrams together. You can
+  // return the answer in any order.
+  //
+  // An Anagram is a word or phrase formed by rearranging the letters of a
+  // different word or phrase, typically using all the original letters exactly
+  // once.
+  //
+  // Input: strs = ["eat","tea","tan","ate","nat","bat"]
+  // Output: [["bat"],["nat","tan"],["ate","eat","tea"]]
+  def groupAnagrams_BAD(strs: Array[String]): List[List[String]] = {
+
+    // The optimal solution would compute levenshtein distance, but I do not
+    // remember how that is implemented.
+    def isAnagram(word1: String, word2: String): Boolean = {
+      if (word1.length() != word2.length()) return false
+      if (word1 == "" && word2 == "") return true
+
+      var charFreq: HashMap[Char, Int] = new HashMap()
+
+      for (i <- 0 until word1.length()) {
+        if (charFreq.get(word1(i)) == None) {
+          charFreq.put(word1(i), 1)
+        } else {
+          charFreq(word1(i)) += 1
+        }
+      }
+
+      for (i <- 0 until word2.length()) {
+        if (charFreq.get(word2(i)) == None) {
+          return false
+        } else {
+          charFreq(word2(i)) -= 1
+        }
+      }
+
+      return charFreq.keySet.filter(charFreq(_) != 0).size == 0
+    }
+
+    var anagramClasses: Array[List[String]] = Array()
+
+    for (str <- strs) {
+      println(s"Considering ${str}")
+      println(s"Current classes: ${anagramClasses.foldLeft("")(_ + ", " + _)}")
+
+      var notDone = true
+      var i = 0
+      while (i < anagramClasses.length && notDone) {
+        println(s"Does it fit in ${anagramClasses(i)}")
+
+        if (isAnagram(str, anagramClasses(i)(0))) {
+          println("yes")
+          anagramClasses(i) = anagramClasses(i).:+(str)
+          notDone = false
+        }
+
+        i += 1
+      }
+
+      if (notDone) {
+        println("Adding new class")
+        anagramClasses = anagramClasses ++ List(List(str))
+      }
+    }
+
+    return anagramClasses.toList
+  }
+
+  def groupAnagrams_GOOD_ACTUALLY(strs: Array[String]): List[List[String]] = {
+    def countRep(word: String): String = {
+      var rep: Array[Int] = Array.fill(26)(0)
+
+      for (c <- word) {
+        val i = c.toInt - 'a'.toInt
+        rep(i) += 1
+      }
+
+      return rep.map(_.toString()).reduce(_ + _)
+    }
+
+    var anagramClasses: HashMap[String, List[String]] = new HashMap()
+
+    for (str <- strs) {
+      var rep = countRep(str)
+
+      if (anagramClasses.get(rep) == None) anagramClasses.put(rep, List(str))
+      else anagramClasses(rep) = anagramClasses(rep).+:(str)
+    }
+
+    return anagramClasses.values.toList
+  }
+
+  // https://leetcode.com/problems/combinations/
+  // Given two integers n and k, return all possible combinations of k numbers
+  // out of 1 ... n.
+  //
+  // You may return the answer in any order.
+  def combine(n: Int, k: Int): List[List[Int]] = {
+    if (k > n) return Nil
+    else if (k < 0) return Nil
+    else if (k == 0) return List(Nil)
+
+    val foo = combine(n - 1, k - 1).map(combo => 1 :: combo.map(x => x + 1))
+    val bar = combine(n - 1, k).map(combo => combo.map(x => x + 1))
+
+    return foo ::: bar
   }
 }
