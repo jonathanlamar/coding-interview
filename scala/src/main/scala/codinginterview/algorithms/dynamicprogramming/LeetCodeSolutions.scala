@@ -55,4 +55,29 @@ object LeetCodeSolutions {
 
     return arr(numCols - 1)
   }
+
+  // https://leetcode.com/problems/jump-game/
+  // Given an array of non-negative integers nums, you are initially positioned
+  // at the first index of the array.
+  //
+  // Each element in the array represents your maximum jump length at that
+  // position.
+  //
+  // Determine if you are able to reach the last index.
+  //
+  // This problem has a really nice discussion in the solution section on
+  // leetcode.  Definitely worth cheacking out.
+  def canJump(nums: Array[Int]): Boolean = {
+    var jumpIndex = nums.length - 1
+
+    for (i <- nums.length - 1 to 0 by -1) {
+      if (i + nums(i) >= jumpIndex) {
+        jumpIndex = i
+      }
+
+      println(s"i = ${i}, jumpIndex = ${jumpIndex}")
+    }
+
+    return jumpIndex == 0
+  }
 }

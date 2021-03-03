@@ -197,19 +197,4 @@ object Cetera {
     return anagramClasses.values.toList
   }
 
-  // https://leetcode.com/problems/combinations/
-  // Given two integers n and k, return all possible combinations of k numbers
-  // out of 1 ... n.
-  //
-  // You may return the answer in any order.
-  def combine(n: Int, k: Int): List[List[Int]] = {
-    if (k > n) return Nil
-    else if (k < 0) return Nil
-    else if (k == 0) return List(Nil)
-
-    val foo = combine(n - 1, k - 1).map(combo => 1 :: combo.map(x => x + 1))
-    val bar = combine(n - 1, k).map(combo => combo.map(x => x + 1))
-
-    return foo ::: bar
-  }
 }
