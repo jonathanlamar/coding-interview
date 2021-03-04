@@ -53,4 +53,28 @@ object DivideAndConquer {
 
     return foo ::: bar
   }
+
+  // https://leetcode.com/problems/subsets/
+  // Given an integer array nums of unique elements, return all possible
+  // subsets (the power set).
+  //
+  // The solution set must not contain duplicate subsets. Return the solution
+  // in any order.
+  def subsets_recursive(nums: Array[Int]): List[List[Int]] = {
+    // This is maybe an example of divide and conquer, and is definitely not
+    // stack safe.
+    def subsetsWithPrefix(
+        prefix: List[Int],
+        nums: Array[Int]
+    ): List[List[Int]] = {
+      if (nums.isEmpty) List(prefix)
+      else
+        subsetsWithPrefix(
+          nums(0) :: prefix,
+          nums.drop(1)
+        ) ::: subsetsWithPrefix(prefix, nums.drop(1))
+    }
+
+    subsetsWithPrefix(Nil, nums)
+  }
 }
