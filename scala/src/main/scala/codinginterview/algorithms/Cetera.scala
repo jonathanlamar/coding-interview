@@ -9,30 +9,17 @@ object Cetera {
     * elements of nums which sum to target.
     */
   def twoSum(nums: Array[Int])(target: Int): Array[(Int, Int)] = {
-    // TODO: Super ugly syntax for appending to an array.
-
     // Map values -> index of complement
     var complementMap: HashMap[Int, Option[Int]] = new HashMap()
     complementMap.addAll(nums.map(x => x -> None))
+
     var solutionArray: Array[(Int, Int)] = Array()
 
     for (i <- 0 until nums.length) {
       val value = nums(i)
       complementMap(value) match {
-        case None => {
-          // println("Updating dict")
-          // println(s"complementMap = ${complementMap}")
-          // println(s"key = ${target - value}, val = ${i}")
-
-          complementMap(target - value) = Some(i)
-        }
-        case Some(j) => {
-          // println(
-          //   s"nums(${i}) = ${value}, nums(${j}) = ${nums(j)}.  Adding (${i}, ${j})."
-          // )
-
-          solutionArray :+= (i, j)
-        }
+        case None    => complementMap(target - value) = Some(i)
+        case Some(j) => solutionArray :+= (i, j)
       }
     }
 
@@ -174,6 +161,8 @@ object Cetera {
   }
 
   def groupAnagrams_GOOD_ACTUALLY(strs: Array[String]): List[List[String]] = {
+
+    // Returns a string encoding of the frequency of each letter.
     def countRep(word: String): String = {
       var rep: Array[Int] = Array.fill(26)(0)
 
@@ -190,7 +179,7 @@ object Cetera {
     for (str <- strs) {
       var rep = countRep(str)
 
-      if (anagramClasses.get(rep) == None) anagramClasses.put(rep, List(str))
+      if (!anagramClasses.contains(rep)) anagramClasses.put(rep, List(str))
       else anagramClasses(rep) = anagramClasses(rep).+:(str)
     }
 

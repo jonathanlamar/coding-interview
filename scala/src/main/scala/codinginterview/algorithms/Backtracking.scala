@@ -17,6 +17,8 @@ object Backtracking {
   // backtracking correctly.  The better solution would be to hash the partial
   // lists and properly implement backtracking.
   def combinationSum(candidates: Array[Int], target: Int): List[List[Int]] = {
+
+    // Finds all combinations containing partialSolution.
     def buildSum(
         candidates2: Array[Int],
         partialSolution: List[Int],
@@ -24,30 +26,30 @@ object Backtracking {
     ): List[List[Int]] = {
       if (target2 == 0) return List(partialSolution)
       else if (target2 < 0) return Nil
-      else
-        return combinationSum(candidates2, target2).map(list =>
-          partialSolution ::: list
-        )
+      else {
+        var solutions: List[List[Int]] = Nil
+
+        for (i <- 0 until candidates2.length) {
+          solutions = solutions ::: buildSum(
+            candidates2.take(i) ++ candidates2.drop(i + 1),
+            partialSolution :+ candidates2(i),
+            target2 + candidates2(i)
+          )
+        }
+
+        return solutions
+      }
     }
 
-    var solutions: List[List[Int]] = Nil
-    for (i <- 0 until candidates.length) {
-      val num = candidates(i)
-      var partialSolution = List(num)
-      solutions = solutions ::: buildSum(
-        candidates.drop(i),
-        partialSolution,
-        target - num
-      )
-    }
-
-    return solutions
+    return buildSum(candidates, Nil, target)
   }
 
   // https://leetcode.com/problems/permutations/
   // Given an array nums of distinct integers, return all the possible
   // permutations. You can return the answer in any order.
   def permute(nums: Array[Int]): List[List[Int]] = {
+
+    // Builds all permutations starting with prefix.
     def permuteWithPrefix(
         prefix: List[Int],
         nums: Array[Int]
